@@ -1,0 +1,224 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://World.gd" type="Script" id=1]
+[ext_resource path="res://Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Models/casa.obj" type="ArrayMesh" id=3]
+[ext_resource path="res://Environment.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Models/casa2.obj" type="ArrayMesh" id=5]
+
+[sub_resource type="PlaneMesh" id=1]
+size = Vector2( 20, 20 )
+
+[sub_resource type="OpenSimplexNoise" id=2]
+octaves = 1
+persistence = 1.0
+lacunarity = 4.0
+
+[sub_resource type="NoiseTexture" id=3]
+seamless = true
+as_normalmap = true
+bump_strength = 8.1
+noise = SubResource( 2 )
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.384314, 0.596078, 0.337255, 1 )
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = SubResource( 3 )
+
+[sub_resource type="PlaneMesh" id=5]
+size = Vector2( 20, 1 )
+
+[sub_resource type="NoiseTexture" id=6]
+height = 25
+seamless = true
+as_normalmap = true
+bump_strength = 0.0
+noise = SubResource( 2 )
+
+[sub_resource type="SpatialMaterial" id=7]
+albedo_color = Color( 0, 0.937255, 0.301961, 1 )
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = SubResource( 6 )
+
+[sub_resource type="BoxShape" id=8]
+extents = Vector3( 1.05943, 0.941443, 1.0778 )
+
+[node name="World" type="Spatial"]
+script = ExtResource( 1 )
+
+[node name="Environment" parent="." instance=ExtResource( 4 )]
+
+[node name="Speed" type="Label" parent="."]
+margin_right = 40.0
+margin_bottom = 14.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Pos" type="Label" parent="."]
+margin_top = 18.0452
+margin_right = 40.0
+margin_bottom = 32.0452
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Player" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.40624, 5.96046e-08, 1.33451 )
+
+[node name="Camera" type="Camera" parent="Player"]
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 3.45296, 3.45296 )
+current = true
+fov = 60.0
+size = 0.5
+near = 0.25
+
+[node name="Suelo" type="CSGMesh" parent="."]
+mesh = SubResource( 1 )
+material = SubResource( 4 )
+
+[node name="ElMuro" type="CSGMesh" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.501424, -9.98934 )
+mesh = SubResource( 5 )
+material = SubResource( 7 )
+
+[node name="Casas" type="Spatial" parent="."]
+
+[node name="Casa" type="StaticBody" parent="Casas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.74386, 0, 1.23324 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Casas/Casa"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.965208, 0 )
+shape = SubResource( 8 )
+
+[node name="CasaModel" type="MeshInstance" parent="Casas/Casa"]
+mesh = ExtResource( 5 )
+material/0 = null
+material/1 = null
+material/2 = null
+material/3 = null
+
+[node name="Casa6" type="StaticBody" parent="Casas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.77023, 0, -1.01758 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Casas/Casa6"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.942225, 0 )
+shape = SubResource( 8 )
+
+[node name="CasaModel" type="MeshInstance" parent="Casas/Casa6"]
+mesh = ExtResource( 3 )
+material/0 = null
+material/1 = null
+
+[node name="Casa5" type="StaticBody" parent="Casas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.78893, -2.38419e-07, -3.24281 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Casas/Casa5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.942225, 0 )
+shape = SubResource( 8 )
+
+[node name="CasaModel" type="MeshInstance" parent="Casas/Casa5"]
+mesh = ExtResource( 3 )
+material/0 = null
+material/1 = null
+
+[node name="Casa7" type="StaticBody" parent="Casas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.97806, 0, 2.03898 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Casas/Casa7"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.964095, 0 )
+shape = SubResource( 8 )
+
+[node name="CasaModel" type="MeshInstance" parent="Casas/Casa7"]
+mesh = ExtResource( 3 )
+material/0 = null
+material/1 = null
+
+[node name="Casa8" type="StaticBody" parent="Casas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8581, 0, -2.66571 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Casas/Casa8"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.920355, 0 )
+shape = SubResource( 8 )
+
+[node name="CasaModel" type="MeshInstance" parent="Casas/Casa8"]
+mesh = ExtResource( 3 )
+material/0 = null
+material/1 = null
+
+[node name="Casa9" type="StaticBody" parent="Casas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.89162, 0, -7.04947 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Casas/Casa9"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.898485, 0 )
+shape = SubResource( 8 )
+
+[node name="CasaModel" type="MeshInstance" parent="Casas/Casa9"]
+mesh = ExtResource( 3 )
+material/0 = null
+material/1 = null
+
+[node name="Casa10" type="StaticBody" parent="Casas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.23801, 0, -7.05728 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Casas/Casa10"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.920355, 0 )
+shape = SubResource( 8 )
+
+[node name="CasaModel" type="MeshInstance" parent="Casas/Casa10"]
+mesh = ExtResource( 3 )
+material/0 = null
+material/1 = null
+
+[node name="Casa11" type="StaticBody" parent="Casas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50344, 0, -7.0175 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Casas/Casa11"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.964095, 0 )
+shape = SubResource( 8 )
+
+[node name="CasaModel" type="MeshInstance" parent="Casas/Casa11"]
+mesh = ExtResource( 3 )
+material/0 = null
+material/1 = null
+
+[node name="Casa3" type="StaticBody" parent="Casas"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.95537, 0, -0.287457 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Casas/Casa3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.920355, 0 )
+shape = SubResource( 8 )
+
+[node name="CasaModel" type="MeshInstance" parent="Casas/Casa3"]
+mesh = ExtResource( 3 )
+material/0 = null
+material/1 = null
