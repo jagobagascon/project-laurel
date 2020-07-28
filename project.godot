@@ -8,9 +8,20 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "Spatial",
+"class": "BaseTown",
+"language": "GDScript",
+"path": "res://TestTown.gd"
+}, {
+"base": "Spatial",
+"class": "GameEnvironment",
+"language": "GDScript",
+"path": "res://Environment.gd"
+} ]
 _global_script_class_icons={
-
+"BaseTown": "",
+"GameEnvironment": ""
 }
 
 [application]
