@@ -1,20 +1,42 @@
 extends KinematicBody
 
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
-const FORWARD = "player_forward"
-const BACK = "player_back"
-const LEFT = "player_left"
-const RIGHT = "player_right"
-const BRAKE = "player_brake"
-
 const SPEED = 0.03
 
 var projection_plane = Plane.PLANE_XY
 
 func _ready():
 	_update_sprite()
+
+func _process(_delta):
+	if Input.is_action_just_pressed("player_action"):
+		print("Action")
+
+func _physics_process(_delta):
+	var direction: Vector3 = Vector3()
+
+	if Input.is_action_pressed("player_forward"):
+		direction.z = -1
+		
+	if Input.is_action_pressed("player_back"):
+		direction.z = 1
+		
+	if Input.is_action_pressed("player_left"):
+		direction.x = -1
+		
+	if Input.is_action_pressed("player_right"):
+		direction.x = 1
+	
+	# test collision before moving to avoid flickering when pushing a wall
+	# if one of the axis is blocked by a wall, move along the other axis:
+	var directionX: Vector3 = Vector3(direction.x, 0, 0)
+	var directionZ: Vector3 = Vector3(0, 0, direction.z)
+	if not test_move(global_transform, direction.normalized() * SPEED):
+		var _collision = move_and_collide(direction.normalized() * SPEED)
+	elif not test_move(global_transform, directionX.normalized() * SPEED):
+		var _collision = move_and_collide(directionX.normalized() * SPEED)
+	elif not test_move(global_transform, directionZ.normalized() * SPEED):
+		var _collision = move_and_collide(directionZ.normalized() * SPEED)
+
 
 # 2D sprites are positioned at a 45 degree angle to directly face the camera
 # that creates a problem when near 3D structures, as the top of the sprite can
@@ -82,30 +104,3 @@ func _vertex_projected(v: Vector3) -> Vector3:
 		v = intersection
 	return v
 
-
-
-func _physics_process(_delta):
-	var direction: Vector3 = Vector3()
-
-	if Input.is_action_pressed(FORWARD):
-		direction.z = -1
-		
-	if Input.is_action_pressed(BACK):
-		direction.z = 1
-		
-	if Input.is_action_pressed(LEFT):
-		direction.x = -1
-		
-	if Input.is_action_pressed(RIGHT):
-		direction.x = 1
-	
-	# test collision before moving to avoid flickering when pushing a wall
-	# if one of the axis is blocked by a wall, move along the other axis:
-	var directionX: Vector3 = Vector3(direction.x, 0, 0)
-	var directionZ: Vector3 = Vector3(0, 0, direction.z)
-	if not test_move(global_transform, direction.normalized() * SPEED):
-		var _collision = move_and_collide(direction.normalized() * SPEED)
-	elif not test_move(global_transform, directionX.normalized() * SPEED):
-		var _collision = move_and_collide(directionX.normalized() * SPEED)
-	elif not test_move(global_transform, directionZ.normalized() * SPEED):
-		var _collision = move_and_collide(directionZ.normalized() * SPEED)

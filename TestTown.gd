@@ -3,13 +3,11 @@ class_name BaseTown
 extends Spatial
 
 func _ready():
-	pass # Replace with function body.
-
-
+	pass
 
 func _on_Environment_time_change(status):
 	match status:
 		GameEnvironment.Status.DAY:
-			$StreetLights.off()
+			$StreetLights.turn_off()
 		GameEnvironment.Status.NIGHT, GameEnvironment.Status.DAWN, GameEnvironment.Status.DUSK:
-			$StreetLights.on()
+			$StreetLights.turn_on()

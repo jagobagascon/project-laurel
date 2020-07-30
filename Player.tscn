@@ -20,6 +20,7 @@ flags_transparent = true
 albedo_texture = ExtResource( 2 )
 
 [node name="Player" type="KinematicBody"]
+input_ray_pickable = false
 script = ExtResource( 1 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]

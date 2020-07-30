@@ -8,12 +8,12 @@ var a: Timer = Timer.new()
 func _ready():
 	pass # Replace with function body.
 
-func _process(delta):
+func _process(_delta):
 	if on:
 		var l = get_children()[0] as Light
-		l.light_energy = _randomize(1, l.light_energy)
+		l.light_energy = _randomize(l.light_energy)
 
-func _randomize(mx: float, def: float) -> float:
+func _randomize(def: float) -> float:
 	var max_change = 1.0
 	var probability = randf()
 	var light_change = randf()
@@ -23,12 +23,12 @@ func _randomize(mx: float, def: float) -> float:
 		return min(1.0, def + max_change * light_change)
 	return def
 
-func on():
+func turn_on():
 	on = true
 	for c in get_children():
 		(c as Light).light_energy = 1
 
-func off():
+func turn_off():
 	on = false
 	for c in get_children():
 		(c as Light).light_energy = 0
