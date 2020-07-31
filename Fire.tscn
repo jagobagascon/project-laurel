@@ -1,81 +1,107 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Fire.gd" type="Script" id=1]
 
-[sub_resource type="SphereMesh" id=3]
-height = 1.0
-radial_segments = 16
-rings = 16
-is_hemisphere = true
-
-[sub_resource type="Shader" id=4]
+[sub_resource type="Shader" id=2]
 code = "shader_type spatial;
 render_mode unshaded;
 
+uniform sampler3D noise;
+
 varying float pos_y;
 
-float rand(vec2 coord) {
-	return fract(sin(dot(coord, vec2(12.9898, 78.233))) * 43758.5453);
+uniform float detail: hint_range(1.0, 10.0) = 5.0;
+uniform float distance_reduction: hint_range(0.0, 3.0) = 1.0;
+uniform float height: hint_range(0.0, 50.0) = 20.5;
+
+float hash(vec3 p) {
+	p  = fract( p*0.3183099+.1 );
+	p *= 17.0;
+	return fract( p.x*p.y*p.z*(p.x+p.y+p.z) );
 }
 
-float perlin_noise(vec2 coord, float t) {
-	vec2 i = floor(coord);
-	vec2 f = fract(coord * t);
-
-	float tl = rand(i) * 6.283;
-	float tr = rand(i + vec2(1.0, 0.0)) * 6.283;
-	float bl = rand(i + vec2(0.0, 1.0)) * 6.283;
-	float br = rand(i + vec2(1.0, 1.0)) * 6.283;
+float perlin_noise( in vec3 x ) {
+	vec3 i = floor(x);
+	vec3 f = fract(x);
+	f = f*f*(3.0-2.0*f);
 	
-	vec2 tlvec = vec2(-sin(tl), cos(tl));
-	vec2 trvec = vec2(-sin(tr), cos(tr));
-	vec2 blvec = vec2(-sin(bl), cos(bl));
-	vec2 brvec = vec2(-sin(br), cos(br));
-	
-	float tldot = dot(tlvec, f);
-	float trdot = dot(trvec, f - vec2(1.0, 0.0));
-	float bldot = dot(blvec, f - vec2(0.0, 1.0));
-	float brdot = dot(brvec, f - vec2(1.0, 1.0));
-	
-	vec2 cubic = f * f * (3.0 - 2.0 * f);
-	
-	float topmix = mix(tldot, trdot, cubic.x);
-	float botmix = mix(bldot, brdot, cubic.x);
-	float wholemix = mix(topmix, botmix, cubic.y);
-	
-	return wholemix;
+	return mix(mix(mix( hash(i+vec3(0,0,0)), 
+						hash(i+vec3(1,0,0)),f.x),
+				   mix( hash(i+vec3(0,1,0)), 
+						hash(i+vec3(1,1,0)),f.x),f.y),
+			   mix(mix( hash(i+vec3(0,0,1)), 
+						hash(i+vec3(1,0,1)),f.x),
+				   mix( hash(i+vec3(0,1,1)), 
+						hash(i+vec3(1,1,1)),f.x),f.y),f.z);
 }
+
+float fbm(vec3 p){
+	float f = 0.0;
+	f += 1.0 * perlin_noise(p); p=2.*p;
+	f += 0.5 * perlin_noise(p); p=2.*p;
+	f += 0.25 * perlin_noise(p); p=2.*p;
+	f += 0.125 * perlin_noise(p); p=2.*p;
+	f += 0.0625 * perlin_noise(p); p=2.*p;
+	return f;
+}
+
 
 void vertex() {
-	float noiseValue = perlin_noise(VERTEX.xz, TIME);
+	float noiseValue = fbm(vec3(VERTEX.x * detail, TIME * 2.0, VERTEX.z * detail));
+	noiseValue = noiseValue * 0.5 + 0.5; // remove negative bit
+	noiseValue -= distance(VERTEX, vec3(0)) * distance_reduction;
 	
-	VERTEX.y = VERTEX.y * abs(noiseValue) * 3.0;
+	VERTEX.y = max(0.0, VERTEX.y * noiseValue * height);
 	pos_y = VERTEX.y;
-	VERTEX.x = VERTEX.x + noiseValue * .1;
-	VERTEX.z = VERTEX.z + noiseValue * .1;
 	// Scale down
 	VERTEX = VERTEX * .2;
 }
 
 void fragment() {
 	
-	float green = 1.0 - clamp(pos_y, 0.0, 1.0);
-	ALBEDO = vec3(1.0, green, 0);
+	float green = clamp(0.7 - pos_y / height * 10.0, 0.0, 1.0);
+	float blue = clamp(0.3 - pos_y / height * 10.0, 0.0, 1.0);
+	ALBEDO = vec3(1.0, green, blue);
 }
 "
 
-[sub_resource type="ShaderMaterial" id=5]
-shader = SubResource( 4 )
+[sub_resource type="Texture3D" id=8]
+flags = 1
+data = {
+"depth": 0,
+"flags": 1,
+"format": 37,
+"height": 0,
+"layers": [  ],
+"width": 0
+}
 
-[sub_resource type="CylinderMesh" id=6]
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
+shader_param/detail = 5.0
+shader_param/distance_reduction = 1.0
+shader_param/height = 20.5
+shader_param/noise = SubResource( 8 )
+
+[sub_resource type="SphereMesh" id=9]
+height = 0.1
+is_hemisphere = true
+
+[sub_resource type="CylinderMesh" id=4]
 top_radius = 0.05
 bottom_radius = 0.05
 height = 0.5
 
-[sub_resource type="CylinderMesh" id=7]
+[sub_resource type="SpatialMaterial" id=6]
+albedo_color = Color( 0.345098, 0.192157, 0, 1 )
+
+[sub_resource type="CylinderMesh" id=5]
 top_radius = 0.05
 bottom_radius = 0.05
 height = 0.3
+
+[sub_resource type="BoxShape" id=7]
+extents = Vector3( 0.259, 0.193642, 0.253228 )
 
 [node name="Fire" type="Spatial"]
 script = ExtResource( 1 )
@@ -83,29 +109,46 @@ script = ExtResource( 1 )
 [node name="Light" type="OmniLight" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.135482, 0 )
 light_color = Color( 1, 0.72549, 0, 1 )
+light_energy = 0.8
 omni_attenuation = 0.482968
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
+material_override = SubResource( 3 )
 cast_shadow = 0
-mesh = SubResource( 3 )
-material/0 = SubResource( 5 )
+mesh = SubResource( 9 )
+material/0 = null
 
 [node name="Logs" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.2, 0.05, 0 )
-mesh = SubResource( 6 )
-material/0 = null
+use_in_baked_light = true
+mesh = SubResource( 4 )
+skeleton = NodePath("")
+material/0 = SubResource( 6 )
 
 [node name="Logs2" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -0.2, 0.05, 0 )
-mesh = SubResource( 6 )
-material/0 = null
+use_in_baked_light = true
+mesh = SubResource( 4 )
+skeleton = NodePath("")
+material/0 = SubResource( 6 )
 
 [node name="Logs3" type="MeshInstance" parent="."]
 transform = Transform( -4.37114e-08, 1, 4.37114e-08, 0, -4.37114e-08, 1, 1, 4.37114e-08, 1.91069e-15, -8.74228e-09, 0.05, 0.2 )
-mesh = SubResource( 7 )
-material/0 = null
+use_in_baked_light = true
+mesh = SubResource( 5 )
+skeleton = NodePath("")
+material/0 = SubResource( 6 )
 
 [node name="Logs4" type="MeshInstance" parent="."]
 transform = Transform( -4.37114e-08, 1, 4.37114e-08, 0, -4.37114e-08, 1, 1, 4.37114e-08, 1.91069e-15, 8.74228e-09, 0.05, -0.2 )
-mesh = SubResource( 7 )
-material/0 = null
+use_in_baked_light = true
+mesh = SubResource( 5 )
+skeleton = NodePath("")
+material/0 = SubResource( 6 )
+
+[node name="StaticBody" type="StaticBody" parent="."]
+collision_layer = 2147483650
+
+[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.181023, 0 )
+shape = SubResource( 7 )

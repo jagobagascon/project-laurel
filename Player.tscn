@@ -8,6 +8,7 @@ extents = Vector3( 0.15, 0.25, 0.05 )
 
 [sub_resource type="SpatialMaterial" id=2]
 flags_transparent = true
+params_cull_mode = 2
 albedo_texture = ExtResource( 2 )
 
 [sub_resource type="PlaneMesh" id=3]
