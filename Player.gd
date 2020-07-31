@@ -4,12 +4,29 @@ const SPEED = 0.03
 
 var projection_plane = Plane.PLANE_XY
 
+onready var actionsManager = $"/root/ActionsManager"
+
 func _ready():
 	_update_sprite()
 
 func _process(_delta):
-	if Input.is_action_just_pressed("player_action"):
-		print("Action")
+	if actionsManager.action_ready():
+		var action = actionsManager.current_action()
+		_show_action(action)
+		if Input.is_action_just_pressed("player_action"):
+			print("Action: " + action.to_string())
+	else:
+		_hide_action()
+
+func _show_action(action):
+	$PlayerUI/Action.show()
+	var label_pos = $Camera.unproject_position($HintsTarget.to_global(Vector3()))
+	$PlayerUI/Action.set_position(label_pos)
+	$PlayerUI/Action/Key.text = "E"
+	$PlayerUI/Action/Text.text = action.to_string()
+	
+func _hide_action():
+	$PlayerUI/Action.hide()
 
 func _physics_process(_delta):
 	var direction: Vector3 = Vector3()

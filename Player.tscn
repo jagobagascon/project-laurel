@@ -8,7 +8,6 @@ extents = Vector3( 0.15, 0.25, 0.05 )
 
 [sub_resource type="SpatialMaterial" id=2]
 flags_transparent = true
-params_cull_mode = 2
 albedo_texture = ExtResource( 2 )
 
 [sub_resource type="PlaneMesh" id=3]
@@ -38,3 +37,37 @@ transform = Transform( 1, 0, 0, 0, 0.707107, -0.707107, 0, 0.707107, 0.707107, 0
 cast_shadow = 0
 mesh = SubResource( 3 )
 material/0 = SubResource( 4 )
+
+[node name="HintsTarget" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+
+[node name="PlayerUI" type="CanvasLayer" parent="."]
+
+[node name="Action" type="HBoxContainer" parent="PlayerUI"]
+visible = false
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Key" type="Label" parent="PlayerUI/Action"]
+margin_top = 13.0
+margin_right = 23.0
+margin_bottom = 27.0
+text = "Key"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Text" type="Label" parent="PlayerUI/Action"]
+margin_left = 27.0
+margin_top = 13.0
+margin_right = 165.0
+margin_bottom = 27.0
+text = "The action to perform"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
