@@ -9,7 +9,7 @@ export(float, 0, 1) var forced_time: float = 0
 
 const DAY_DURATION = 24 * 60 * 60 * 1000
 
-const day_start: float = 6.0 / 24.0
+const day_start: float = 7.0 / 24.0
 const day_end: float = 19.0 / 24.0
 
 const dawn_duration: float = 1 / 24.0
@@ -84,10 +84,6 @@ func _update_sun_moon() -> void:
 	$SunPos/Sun.light_energy = _get_sun_energy_from_offset()
 	$SunPos/Sun.light_color = _get_sun_color_from_offset()
 	$WorldEnvironment.environment.background_energy = _get_sky_energy_from_offset()
-	print(_get_sun_energy_from_offset())
-	print(_get_sun_color_from_offset())
-	print(_get_sky_energy_from_offset())
-
 
 func _get_sun_rotation_from_offset() -> float:
 	# sun is visible from -90 to 90 this range should be for daylight
