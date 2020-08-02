@@ -1,15 +1,25 @@
 extends KinematicBody
 
-const SPEED = 0.03
+const SPEED = 3
 
 var projection_plane = Plane.PLANE_XY
 
 onready var actionsManager = $"/root/ActionsManager"
 
+var facing: Vector2 = Vector2(0, -1)
+var angle_0: Vector2 = Vector2(0, -1)
+
 func _ready():
 	_update_sprite()
 
+func _physics_process(delta):
+	_character_movement(delta)
+
 func _process(_delta):
+	# set character model rotation
+	$main_character.rotation.y = facing.angle_to(angle_0)
+	
+	# show / hide character actions
 	if actionsManager.action_ready():
 		var action = actionsManager.current_action()
 		_show_action(action)
@@ -28,31 +38,46 @@ func _show_action(action):
 func _hide_action():
 	$PlayerUI/Action.hide()
 
-func _physics_process(_delta):
-	var direction: Vector3 = Vector3()
+func _character_movement(delta):
+	var wanted_direction: Vector2 = _get_direction_by_input()
+	if wanted_direction.length() > 0:
+		# smooth rotate character
+		# lerp from current facing direction to wanted movement direction
+		var angle = lerp_angle(angle_0.angle_to(facing), angle_0.angle_to(wanted_direction), .3)
+		var movement_direction = angle_0.rotated(angle)
+		
+		# interpolate speed using the difference between the facing angle and the moving angle
+		# the bigger the angle the slower the user will move.
+		var speed_decrease_by_angle = (PI - abs(facing.angle_to(wanted_direction))) / PI
+		var sp = SPEED * delta * speed_decrease_by_angle
+		
+		var move_dir = Vector3(movement_direction.normalized().x, 0, movement_direction.normalized().y)
+		var want_dir = Vector3(wanted_direction.normalized().x, 0, wanted_direction.normalized().y)
+		# want_dir == rotate smooth and move in player input direction
+		# move_dir == rotate smooth and move in character direction
+		var _collision = move_and_collide(want_dir * sp)
+		facing = movement_direction
+	
+
+func _get_direction_by_input() -> Vector2:
+	var direction: Vector2 = Vector2()
 
 	if Input.is_action_pressed("player_forward"):
-		direction.z = -1
+		direction.y = -1
 		
 	if Input.is_action_pressed("player_back"):
-		direction.z = 1
+		direction.y = 1
 		
 	if Input.is_action_pressed("player_left"):
 		direction.x = -1
 		
 	if Input.is_action_pressed("player_right"):
 		direction.x = 1
-	
-	# test collision before moving to avoid flickering when pushing a wall
-	# if one of the axis is blocked by a wall, move along the other axis:
-	var directionX: Vector3 = Vector3(direction.x, 0, 0)
-	var directionZ: Vector3 = Vector3(0, 0, direction.z)
-	if not test_move(global_transform, direction.normalized() * SPEED):
-		var _collision = move_and_collide(direction.normalized() * SPEED)
-	elif not test_move(global_transform, directionX.normalized() * SPEED):
-		var _collision = move_and_collide(directionX.normalized() * SPEED)
-	elif not test_move(global_transform, directionZ.normalized() * SPEED):
-		var _collision = move_and_collide(directionZ.normalized() * SPEED)
+
+	return direction.normalized()
+
+
+
 
 
 # 2D sprites are positioned at a 45 degree angle to directly face the camera

@@ -38,13 +38,13 @@ _global_script_class_icons={
 
 [application]
 
-config/name="JuegoGodot"
+config/name="ProjectLaurel"
 run/main_scene="res://World.tscn"
 config/icon="res://icon.png"
 
 [autoload]
 
-ActionsManager="*res://Player/ActionsManager.gd"
+ActionsManager="*res://Globals/ActionsManager.gd"
 
 [input]
 

@@ -121,9 +121,11 @@ func _get_sun_energy_from_offset() -> float:
 
 func _get_sun_color_from_offset() -> Color:
 	if _is_dawn():
-		return Color.orange.linear_interpolate(Color.white, _offset_in_dawn())
+		return Color.orange.linear_interpolate(Color.white, pow(_offset_in_dawn(), 2))
 	elif _is_dusk():
-		return Color.white.linear_interpolate(Color.orange, _offset_in_dusk())
+		var f = 1.0 - 1.0 / (1.0 + _offset_in_dusk())
+		print(pow(_offset_in_dusk(), .2), ' ', _offset_in_dusk())
+		return Color.white.linear_interpolate(Color.orange, max(0.0, f))
 	else:
 		return Color.white
 
