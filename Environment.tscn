@@ -16,7 +16,7 @@ texture_size = 0
 [sub_resource type="Environment" id=2]
 background_mode = 2
 background_sky = SubResource( 1 )
-background_energy = 2.0
+background_energy = 0.2
 ambient_light_sky_contribution = 0.938757
 fog_color = Color( 0.501961, 0.6, 0.701961, 1 )
 fog_depth_begin = 5.0
@@ -37,13 +37,13 @@ script = ExtResource( 1 )
 environment = SubResource( 2 )
 
 [node name="SunPos" type="Spatial" parent="."]
-transform = Transform( 0.97142, 0.237366, 0, -0.237366, 0.97142, 0, 0, 0, 1, 0, 0, 0 )
+transform = Transform( -0.0793144, -0.996849, 0, 0.996849, -0.0793144, 0, 0, 0, 1, 0, 0, 0 )
 
 [node name="Sun" type="DirectionalLight" parent="SunPos"]
 transform = Transform( 1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 0, 0, 0 )
+light_energy = 0.0
 light_bake_mode = 0
 shadow_enabled = true
-shadow_bias = 0.4
 directional_shadow_split_1 = 0.05
 directional_shadow_split_2 = 0.1
 directional_shadow_blend_splits = true
