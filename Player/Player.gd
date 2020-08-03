@@ -24,7 +24,7 @@ func _character_movement(delta):
 		moving_direction.y = -0.0000001
 
 	moving_direction.z = direction.z * SPEED
-	print(moving_direction.y)
+	
 	moving_direction = move_and_slide_with_snap(moving_direction, Vector3(0, -0.1, 0), Vector3.UP, true)
 	if self.is_on_floor():
 		grounded = true

@@ -80,6 +80,7 @@ script = ExtResource( 1 )
 
 [node name="Environment" parent="." instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.78625, 1.97618, 1.44871 )
+force_time = true
 
 [node name="UI" type="Spatial" parent="."]
 
@@ -272,12 +273,12 @@ material/1 = null
 
 [node name="StreetLights" type="Spatial" parent="TestTown"]
 script = ExtResource( 6 )
-on = false
+on = true
 
 [node name="SpotLight" type="SpotLight" parent="TestTown/StreetLights"]
 transform = Transform( 0.952327, 2.08387e-09, -0.30508, 0.30508, -1.33355e-08, 0.952327, -2.08387e-09, -1, -1.33355e-08, -0.178703, 1.25236, -2.27742 )
 light_color = Color( 1, 0.772549, 0, 1 )
-light_energy = 0.0
+light_energy = 0.628294
 light_bake_mode = 2
 shadow_enabled = true
 shadow_bias = 0.04
@@ -288,7 +289,6 @@ spot_angle = 70.0
 [node name="SpotLight2" type="SpotLight" parent="TestTown/StreetLights"]
 transform = Transform( 0.952327, 2.08387e-09, -0.30508, 0.30508, -1.33355e-08, 0.952327, -2.08387e-09, -1, -1.33355e-08, -0.178703, 1.25236, 1.97595 )
 light_color = Color( 1, 0.772549, 0, 1 )
-light_energy = 0.0
 light_bake_mode = 2
 shadow_enabled = true
 shadow_bias = 0.04
