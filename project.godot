@@ -76,9 +76,9 @@ player_action={
 
 [layer_names]
 
-3d_physics/layer_1="Player"
-3d_physics/layer_2="Collision"
-3d_physics/layer_3="Door"
+3d_physics/layer_1="Collision"
+3d_physics/layer_2="Door"
+3d_physics/layer_20="Player"
 
 [rendering]
 

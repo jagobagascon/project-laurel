@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://World.gd" type="Script" id=1]
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
@@ -31,6 +31,11 @@ albedo_color = Color( 0.384314, 0.596078, 0.337255, 1 )
 normal_enabled = true
 normal_scale = 1.0
 normal_texture = SubResource( 3 )
+
+[sub_resource type="PhysicsMaterial" id=12]
+
+[sub_resource type="BoxShape" id=13]
+extents = Vector3( 10, 1, 10 )
 
 [sub_resource type="PlaneMesh" id=5]
 size = Vector2( 20, 1 )
@@ -71,9 +76,6 @@ propagation = 0.7
 [node name="World" type="Spatial"]
 script = ExtResource( 1 )
 
-[node name="Environment" parent="." instance=ExtResource( 4 )]
-force_time = true
-
 [node name="UI" type="Spatial" parent="."]
 
 [node name="Pos" type="Label" parent="UI"]
@@ -97,6 +99,13 @@ __meta__ = {
 "_edit_group_": true
 }
 
+[node name="StaticBody" type="StaticBody" parent="TestTown/Suelo"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.02496, 0 )
+physics_material_override = SubResource( 12 )
+
+[node name="CollisionShape" type="CollisionShape" parent="TestTown/Suelo/StaticBody"]
+shape = SubResource( 13 )
+
 [node name="ElMuro" type="CSGMesh" parent="TestTown"]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.501424, -9.98934 )
 use_in_baked_light = true
@@ -108,7 +117,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.023, 0 )
 
 [node name="Casa" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.744, 0, 1.233 )
-collision_layer = 2
 __meta__ = {
 "_edit_group_": true
 }
@@ -129,7 +137,8 @@ material/4 = SubResource( 9 )
 
 [node name="Door" type="Area" parent="TestTown/Buildings/Casa"]
 input_ray_pickable = false
-collision_layer = 2147483652
+collision_layer = 2147483650
+collision_mask = 524288
 script = ExtResource( 9 )
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa/Door"]
@@ -140,7 +149,6 @@ shape = SubResource( 10 )
 
 [node name="Casa6" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.77023, 0, -1.01758 )
-collision_layer = 2
 __meta__ = {
 "_edit_group_": true
 }
@@ -157,7 +165,6 @@ material/1 = null
 
 [node name="Casa5" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.78893, -2.38419e-07, -3.24281 )
-collision_layer = 2
 __meta__ = {
 "_edit_group_": true
 }
@@ -174,7 +181,6 @@ material/1 = null
 
 [node name="Casa7" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.97806, 0, 2.03898 )
-collision_layer = 2
 __meta__ = {
 "_edit_group_": true
 }
@@ -191,7 +197,6 @@ material/1 = null
 
 [node name="Casa8" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8581, 0, -2.66571 )
-collision_layer = 2
 __meta__ = {
 "_edit_group_": true
 }
@@ -208,7 +213,6 @@ material/1 = null
 
 [node name="Casa9" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -4.89162, 0, -7.04947 )
-collision_layer = 2
 __meta__ = {
 "_edit_group_": true
 }
@@ -225,7 +229,6 @@ material/1 = null
 
 [node name="Casa10" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.23801, 0, -7.05728 )
-collision_layer = 2
 __meta__ = {
 "_edit_group_": true
 }
@@ -242,7 +245,6 @@ material/1 = null
 
 [node name="Casa11" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.50344, 0, -7.0175 )
-collision_layer = 2
 __meta__ = {
 "_edit_group_": true
 }
@@ -259,7 +261,6 @@ material/1 = null
 
 [node name="Casa3" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.95537, 0, -0.287457 )
-collision_layer = 2
 __meta__ = {
 "_edit_group_": true
 }
@@ -276,12 +277,12 @@ material/1 = null
 
 [node name="StreetLights" type="Spatial" parent="TestTown"]
 script = ExtResource( 6 )
-on = true
+on = false
 
 [node name="SpotLight" type="SpotLight" parent="TestTown/StreetLights"]
 transform = Transform( 0.952327, 2.08387e-09, -0.30508, 0.30508, -1.33355e-08, 0.952327, -2.08387e-09, -1, -1.33355e-08, -0.178703, 1.25236, -2.27742 )
 light_color = Color( 1, 0.772549, 0, 1 )
-light_energy = 0.222811
+light_energy = 0.0
 light_bake_mode = 2
 shadow_enabled = true
 shadow_bias = 0.04
@@ -292,6 +293,7 @@ spot_angle = 70.0
 [node name="SpotLight2" type="SpotLight" parent="TestTown/StreetLights"]
 transform = Transform( 0.952327, 2.08387e-09, -0.30508, 0.30508, -1.33355e-08, 0.952327, -2.08387e-09, -1, -1.33355e-08, -0.178703, 1.25236, 1.97595 )
 light_color = Color( 1, 0.772549, 0, 1 )
+light_energy = 0.0
 light_bake_mode = 2
 shadow_enabled = true
 shadow_bias = 0.04
@@ -302,6 +304,7 @@ spot_angle = 70.0
 [node name="OmniLight" type="OmniLight" parent="TestTown/StreetLights"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.33249, 1.37266, 1.27729 )
 light_color = Color( 0, 1, 1, 1 )
+light_energy = 0.0
 light_specular = 1.0
 light_bake_mode = 2
 shadow_enabled = true
@@ -310,8 +313,9 @@ omni_range = 4.0
 omni_attenuation = 1.51572
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.767293, 0, -0.517376 )
-collision_mask = 7
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.55354, 1.97618, 0.93133 )
+collision_layer = 524289
+collision_mask = 1
 
 [node name="Camera" type="Camera" parent="Player"]
 transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 2.67859, 2.67859 )
@@ -320,9 +324,12 @@ fov = 60.0
 size = 0.5
 near = 0.25
 
+[node name="Environment" parent="Player" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.767293, 0, 0.517376 )
+
 [node name="Fire" parent="." instance=ExtResource( 10 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4316, -4.76837e-07, 4.12401 )
 
 [node name="GIProbe" type="GIProbe" parent="."]
 data = SubResource( 11 )
-[connection signal="time_change" from="Environment" to="TestTown" method="_on_Environment_time_change"]
+[connection signal="time_change" from="Player/Environment" to="TestTown" method="_on_Environment_time_change"]
