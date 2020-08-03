@@ -119,8 +119,7 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.135482, 0 )
 light_color = Color( 1, 0.72549, 0, 1 )
 light_energy = 0.6
 shadow_enabled = true
-shadow_bias = 0.1
-shadow_contact = 0.09
+shadow_contact = 0.2
 omni_range = 5.03611
 omni_attenuation = 0.482968
 
