@@ -3,8 +3,9 @@ extends KinematicBody
 const SPEED =  2
 const G = 25
 var moving_direction = Vector3()
+var grounded = true
 
-
+# for slopes
 onready var actionsManager = $"/root/ActionsManager"
 
 func _physics_process(delta):
@@ -14,11 +15,21 @@ func _character_movement(delta):
 	var direction = _get_direction_by_input()
 	
 	moving_direction.x = direction.x * SPEED
-	moving_direction.y += direction.y - G * delta
-	moving_direction.z = direction.z * SPEED
-	
-	moving_direction = move_and_slide(moving_direction, Vector3.UP)
+	if not grounded:
+		moving_direction.y -= G * delta
+		# if we dont apply some negative force is_on_floor_returns false
+		# but if we apply full gravity while on floor, player movement gets
+		# changed on slopes (sliding down the slop)
+	else:
+		moving_direction.y = -0.0000001
 
+	moving_direction.z = direction.z * SPEED
+	print(moving_direction.y)
+	moving_direction = move_and_slide_with_snap(moving_direction, Vector3(0, -0.1, 0), Vector3.UP, true)
+	if self.is_on_floor():
+		grounded = true
+	else:
+		grounded = false
 
 func _get_direction_by_input() -> Vector3:
 	var direction: Vector3 = Vector3()

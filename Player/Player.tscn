@@ -4,8 +4,8 @@
 [ext_resource path="res://Player/Sprite_male_template.png" type="Texture" id=2]
 
 [sub_resource type="CapsuleShape" id=1]
-radius = 0.16
-height = 0.46
+radius = 0.13
+height = 0.547069
 
 [sub_resource type="AtlasTexture" id=2]
 flags = 7
@@ -180,7 +180,7 @@ script = ExtResource( 1 )
 current = true
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
-transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0.383, 0 )
+transform = Transform( 1, 0, 0, 0, -1.62921e-07, -1, 0, 1, -1.62921e-07, 0, 0.401787, 0 )
 shape = SubResource( 1 )
 
 [node name="Sprite" type="AnimatedSprite3D" parent="."]
