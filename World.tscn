@@ -1,9 +1,10 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://World.gd" type="Script" id=1]
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
 [ext_resource path="res://Models/casa.obj" type="ArrayMesh" id=3]
 [ext_resource path="res://Environment.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Models/pond/pond.tscn" type="PackedScene" id=5]
 [ext_resource path="res://StreetLights.gd" type="Script" id=6]
 [ext_resource path="res://TestTown.gd" type="Script" id=7]
 [ext_resource path="res://Door.gd" type="Script" id=9]
@@ -70,10 +71,70 @@ bias = 1.5
 normal_bias = 0.0
 propagation = 0.7
 
-[sub_resource type="PhysicsMaterial" id=14]
+[sub_resource type="HeightMapShape" id=14]
+map_width = 7
+map_depth = 7
+map_data = PoolRealArray( 0, 0, 0, 0, 0, 0, 0, 0, 0.22, 0.22, 0.22, 0.22, 0.22, 0, 0, 0.22, 0, 0, 0.097, 0.22, 0, 0, 0.22, 0.069, 0, 0, 0.22, 0, 0, 0.22, 0, 0, 0.22, 0.22, 0, 0, 0.22, 0.22, 0.22, 0.22, 0.22, 0, 0, 0, 0, 0, 0, 0, 0 )
 
-[sub_resource type="BoxShape" id=15]
-extents = Vector3( 0.967361, 0.23751, 1 )
+[sub_resource type="PlaneMesh" id=15]
+
+[sub_resource type="Shader" id=16]
+code = "shader_type spatial;
+render_mode depth_test_disable;
+
+uniform vec4 DepthGradientShallow: hint_color = vec4(0.325, 0.807, 0.971, 0.725);
+uniform vec4 DepthGradientDeep: hint_color = vec4(0.086, 0.407, 1, 0.749);
+uniform float DepthMaxDistance: hint_range(0.05, 5.0) = 1.0;
+uniform float SurfaceNoiseCutoff: hint_range(0.0, 1.0) = 1.0;
+uniform float FoamCutoff: hint_range(0.0, 1.0) = 1.0;
+uniform sampler2D wave_noise;
+
+void fragment() {
+	float depth = textureLod(DEPTH_TEXTURE, SCREEN_UV, 0.0).r;
+	vec4 upos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, depth * 2.0 - 1.0, 1.0);
+	vec3 pixel_position = upos.xyz / upos.w;
+	
+	float water_depth = clamp(distance(VERTEX, pixel_position), 0.0, 1.0);
+	bool negative_depth = (VERTEX - pixel_position).z <= 0.0;
+	if (negative_depth) {
+		ALPHA = 0.0;
+	} else {
+		// water color base on depth
+		float waterDepthDifference01 = water_depth > DepthMaxDistance ? 1.0 : water_depth / DepthMaxDistance;
+		vec4 waterColor = mix(DepthGradientShallow, DepthGradientDeep, waterDepthDifference01);
+		vec4 noise_tex_x = texture(wave_noise, vec2(UV.x + TIME / 50.0, UV.y * 2.0              ));
+		vec4 noise_tex_y = texture(wave_noise, vec2(UV.x,               UV.y * 2.0 + TIME / 50.0));
+		float noise_value = max(noise_tex_y.g, noise_tex_x.g);
+		float surfaceNoise = noise_value < SurfaceNoiseCutoff ? 1.0 : 0.0;
+		float shoreline_foam = noise_value < FoamCutoff / water_depth ? 1.0 : 0.0;
+
+		ALBEDO = waterColor.rgb + clamp(surfaceNoise + shoreline_foam, 0.0, 1.0);
+	}
+}"
+
+[sub_resource type="OpenSimplexNoise" id=17]
+octaves = 4
+period = 80.0
+persistence = 1.0
+lacunarity = 2.38
+
+[sub_resource type="NoiseTexture" id=18]
+width = 256
+height = 256
+seamless = true
+as_normalmap = true
+noise = SubResource( 17 )
+
+[sub_resource type="ShaderMaterial" id=19]
+shader = SubResource( 16 )
+shader_param/DepthGradientShallow = Color( 0.325, 0.807, 0.971, 0.725 )
+shader_param/DepthGradientDeep = Color( 0.086, 0.407, 1, 0.749 )
+shader_param/DepthMaxDistance = 0.494
+shader_param/SurfaceNoiseCutoff = 0.459
+shader_param/FoamCutoff = 0.024
+shader_param/wave_noise = SubResource( 18 )
+
+[sub_resource type="SphereMesh" id=20]
 
 [node name="World" type="Spatial"]
 script = ExtResource( 1 )
@@ -294,12 +355,14 @@ spot_attenuation = 0.0426887
 spot_angle = 70.0
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.55354, 1.97618, 0.93133 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.564314, 0.142616, 6.91679 )
 collision_layer = 524289
 collision_mask = 1
 
 [node name="Environment" parent="Player" instance=ExtResource( 4 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.76729, 0, 0.51738 )
+force_time = true
+forced_time = 0.42
 
 [node name="Camera" type="Camera" parent="Player"]
 transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 2.67859, 2.67859 )
@@ -314,24 +377,23 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4316, -4.76837e-07, 4.12401 
 [node name="GIProbe" type="GIProbe" parent="."]
 data = SubResource( 13 )
 
-[node name="StaticBody" type="StaticBody" parent="."]
-transform = Transform( 0.866025, -0.5, 0, 0.5, 0.866025, 0, 0, 0, 1, 3.59574, 0.210389, 4.12436 )
-physics_material_override = SubResource( 14 )
+[node name="Pond" type="Spatial" parent="."]
+transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 0.84, 0.01, 7.085 )
 
-[node name="CollisionShape" type="CollisionShape" parent="StaticBody"]
-shape = SubResource( 15 )
+[node name="StaticBody" type="StaticBody" parent="Pond"]
 
-[node name="StaticBody2" type="StaticBody" parent="."]
-transform = Transform( 0.5, -0.866025, 0, 0.866025, 0.5, 0, 0, 0, 1, 4.56146, 0.851902, 4.12436 )
-physics_material_override = SubResource( 14 )
+[node name="CollisionShape" type="CollisionShape" parent="Pond/StaticBody"]
+transform = Transform( 0.5, 0, 0, 0, 1, 0, 0, 0, 0.5, 0, 0, 0 )
+shape = SubResource( 14 )
 
-[node name="CollisionShape" type="CollisionShape" parent="StaticBody2"]
-shape = SubResource( 15 )
+[node name="pond" parent="Pond" instance=ExtResource( 5 )]
 
-[node name="StaticBody3" type="StaticBody" parent="."]
-transform = Transform( 0.173648, -0.984808, 0, 0.984808, 0.173648, 0, 0, 0, 1, 5.1133, 2.00042, 4.12436 )
-physics_material_override = SubResource( 14 )
+[node name="Water" type="MeshInstance" parent="Pond"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.175809, 0 )
+mesh = SubResource( 15 )
+material/0 = SubResource( 19 )
 
-[node name="CollisionShape" type="CollisionShape" parent="StaticBody3"]
-shape = SubResource( 15 )
+[node name="CSGMesh" type="CSGMesh" parent="Pond"]
+transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.421441, 0.162665, 0.0994771 )
+mesh = SubResource( 20 )
 [connection signal="time_change" from="Player/Environment" to="TestTown" method="_on_Environment_time_change"]
