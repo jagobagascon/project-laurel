@@ -4,11 +4,8 @@ extends Spatial
 
 signal time_change
 
-enum Mode { INSIDE, OUTSIDE }
-
 export var force_time: bool = false
 export(float, 0, 1) var forced_time: float = 0
-export(Mode) var mode: int = Mode.OUTSIDE
 
 const DAY_DURATION = 24 * 60 * 60 * 1000
 
@@ -31,15 +28,14 @@ const DAY_SKY_HORIZON_COLOR: Color = Color(0.55, 0.7, 0.8)
 
 const DAWN_SKY_COLOR: Color = Color(0.84, 0.53, 0.0)
 
-const in_env = preload("res://InsideEnvironment.tres")
-const out_env = preload("res://OutsideEnvironment.tres")
+const def_env = preload("res://OutsideEnvironment.tres")
 
 # MODIFY WITH CARE
 ######################################
 var offset = 0
 enum Status { DAWN, DAY, DUSK, NIGHT }
 var cur_status
-var current_mode = Mode.OUTSIDE
+var override_env = null
 ######################################
 
 # Called when the node enters the scene tree for the first time.
@@ -54,13 +50,10 @@ func _process(_delta: float):
 	_update_env_mode()
 
 func _update_env_mode():
-	if mode != null and current_mode != mode:
-		current_mode = mode
-		match mode:
-			Mode.INSIDE:
-				$WorldEnvironment.environment = in_env
-			Mode.OUTSIDE:
-				$WorldEnvironment.environment = out_env
+	if override_env != null and $WorldEnvironment.environment != override_env:
+		$WorldEnvironment.environment = override_env
+	elif override_env == null and $WorldEnvironment.environment != def_env:
+		$WorldEnvironment.environment = def_env
 
 func _update_offset_from_cur_time() -> void:
 	# allow time forcing for debugging purpouses

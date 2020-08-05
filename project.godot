@@ -45,6 +45,7 @@ config/icon="res://icon.png"
 [autoload]
 
 ActionsManager="*res://Globals/ActionsManager.gd"
+TransitionManager="*res://Globals/TransitionManager.tscn"
 
 [input]
 

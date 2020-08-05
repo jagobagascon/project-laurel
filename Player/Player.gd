@@ -65,7 +65,7 @@ func _process(_delta):
 		var action = actionsManager.current_action()
 		_show_action(action)
 		if Input.is_action_just_pressed("player_action"):
-			print("Action: " + action.to_string())
+			actionsManager.do_action(self, action)
 	else:
 		_hide_action()
 
@@ -73,7 +73,7 @@ func _show_action(action):
 	$PlayerUI/Action.show()
 	var label_pos = $Camera.unproject_position($HintsTarget.to_global(Vector3()))
 	$PlayerUI/Action.set_position(label_pos)
-	$PlayerUI/Action/Key.text = "E"
+	$PlayerUI/Action/Key.text = "<Space>"
 	$PlayerUI/Action/Text.text = action.to_string()
 	
 func _hide_action():

@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=2]
+[gd_scene load_steps=23 format=2]
 
 [ext_resource path="res://World.gd" type="Script" id=1]
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
@@ -6,23 +6,23 @@
 [ext_resource path="res://Environment.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Models/pond/pond.tscn" type="PackedScene" id=5]
 [ext_resource path="res://StreetLights.gd" type="Script" id=6]
-[ext_resource path="res://TestTown.gd" type="Script" id=7]
+[ext_resource path="res://InsideEnvironment.tres" type="Environment" id=7]
 [ext_resource path="res://Models/Water_material.tres" type="Material" id=8]
 [ext_resource path="res://Door.gd" type="Script" id=9]
 [ext_resource path="res://Models/fireplace/Fire.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Models/casa2.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Models/test_world/test_world.tscn" type="PackedScene" id=12]
 
-[sub_resource type="BoxShape" id=5]
+[sub_resource type="BoxShape" id=1]
 extents = Vector3( 1.05943, 0.941443, 1.0778 )
 
-[sub_resource type="BoxShape" id=6]
+[sub_resource type="BoxShape" id=2]
 extents = Vector3( 0.279411, 0.441596, 0.158741 )
 
-[sub_resource type="SpatialMaterial" id=7]
+[sub_resource type="SpatialMaterial" id=3]
 albedo_color = Color( 0.32549, 0.596078, 0.32549, 1 )
 
-[sub_resource type="GIProbeData" id=8]
+[sub_resource type="GIProbeData" id=4]
 bounds = AABB( -17.3448, -10, -16.6921, 34.6896, 20, 33.3842 )
 cell_size = 0.271013
 to_cell_xform = Transform( 3.68987, 0, 0, 0, 3.68987, 0, 0, 0, 3.68987, 64, 36.8987, 61.5916 )
@@ -32,20 +32,30 @@ bias = 1.5
 normal_bias = 0.0
 propagation = 0.7
 
-[sub_resource type="PlaneMesh" id=9]
+[sub_resource type="PlaneMesh" id=5]
 
-[sub_resource type="SphereMesh" id=10]
+[sub_resource type="SphereMesh" id=6]
 
-[sub_resource type="PrismMesh" id=11]
+[sub_resource type="PrismMesh" id=7]
 size = Vector3( 0.2, 0.2, 0.2 )
+
+[sub_resource type="CubeMesh" id=8]
+size = Vector3( 3, 2, 3 )
+
+[sub_resource type="BoxShape" id=9]
+extents = Vector3( 0.323252, 0.600017, 0.208944 )
+
+[sub_resource type="BoxShape" id=10]
+extents = Vector3( 2.23967, 0.186782, 2.18222 )
 
 [node name="World" type="Spatial"]
 script = ExtResource( 1 )
 
-[node name="test_world" parent="." instance=ExtResource( 12 )]
-
 [node name="Environment" parent="." instance=ExtResource( 4 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.03332, 0.142616, 7.95502 )
+force_time = true
+forced_time = 0.62
+
+[node name="test_world" parent="." instance=ExtResource( 12 )]
 
 [node name="UI" type="Spatial" parent="."]
 
@@ -53,13 +63,12 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.03332, 0.142616, 7.95502 )
 margin_top = 18.0452
 margin_right = 135.0
 margin_bottom = 32.0452
-text = "Pos = 1.406, 0, 1.335"
+text = "Pos = 1.8788, 0.12741, 5.93115"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="TestTown" type="Spatial" parent="."]
-script = ExtResource( 7 )
 
 [node name="Buildings" type="Spatial" parent="TestTown"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.023, 0 )
@@ -72,17 +81,18 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.965208, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 1 )
 
 [node name="Door" type="Area" parent="TestTown/Buildings/Casa"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.2164 )
 input_ray_pickable = false
 collision_layer = 2147483650
 collision_mask = 524288
 script = ExtResource( 9 )
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa/Door"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.434383, 1.1843 )
-shape = SubResource( 6 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.434383, -0.103063 )
+shape = SubResource( 2 )
 
 [node name="casa2" parent="TestTown/Buildings/Casa" instance=ExtResource( 11 )]
 
@@ -94,7 +104,7 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa6"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.942225, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 1 )
 
 [node name="CasaModel" type="MeshInstance" parent="TestTown/Buildings/Casa6"]
 use_in_baked_light = true
@@ -110,7 +120,7 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa5"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.942225, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 1 )
 
 [node name="CasaModel" type="MeshInstance" parent="TestTown/Buildings/Casa5"]
 use_in_baked_light = true
@@ -126,13 +136,13 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa7"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.964095, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 1 )
 
 [node name="CasaModel" type="MeshInstance" parent="TestTown/Buildings/Casa7"]
 use_in_baked_light = true
 mesh = ExtResource( 3 )
 material/0 = null
-material/1 = SubResource( 7 )
+material/1 = SubResource( 3 )
 
 [node name="Casa8" type="StaticBody" parent="TestTown/Buildings"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8581, 0, -2.66571 )
@@ -142,7 +152,7 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa8"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.920355, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 1 )
 
 [node name="CasaModel" type="MeshInstance" parent="TestTown/Buildings/Casa8"]
 use_in_baked_light = true
@@ -158,7 +168,7 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa9"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.898485, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 1 )
 
 [node name="CasaModel" type="MeshInstance" parent="TestTown/Buildings/Casa9"]
 use_in_baked_light = true
@@ -174,7 +184,7 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa10"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.920355, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 1 )
 
 [node name="CasaModel" type="MeshInstance" parent="TestTown/Buildings/Casa10"]
 use_in_baked_light = true
@@ -190,7 +200,7 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa11"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.964095, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 1 )
 
 [node name="CasaModel" type="MeshInstance" parent="TestTown/Buildings/Casa11"]
 use_in_baked_light = true
@@ -206,7 +216,7 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="TestTown/Buildings/Casa3"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.920355, 0 )
-shape = SubResource( 5 )
+shape = SubResource( 1 )
 
 [node name="CasaModel" type="MeshInstance" parent="TestTown/Buildings/Casa3"]
 use_in_baked_light = true
@@ -255,10 +265,11 @@ near = 0.25
 [node name="Fire" parent="." instance=ExtResource( 10 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4316, -4.76837e-07, 4.12401 )
 bias = 0.1
+contact = 0.0
 
 [node name="GIProbe" type="GIProbe" parent="."]
 extents = Vector3( 17.3448, 10, 16.6921 )
-data = SubResource( 8 )
+data = SubResource( 4 )
 
 [node name="Pond" type="Spatial" parent="."]
 transform = Transform( 2, 0, 0, 0, 2, 0, 0, 0, 2, 7.75648, -0.0507126, 5.58819 )
@@ -269,11 +280,12 @@ __meta__ = {
 [node name="Fire2" parent="Pond" instance=ExtResource( 10 )]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.854079, 0.155565, 0.823868 )
 bias = 0.1
+contact = 0.0
 
 [node name="Water" type="MeshInstance" parent="Pond"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.141735, 0 )
 use_in_baked_light = true
-mesh = SubResource( 9 )
+mesh = SubResource( 5 )
 material/0 = ExtResource( 8 )
 
 [node name="pond" parent="Pond" instance=ExtResource( 5 )]
@@ -281,10 +293,41 @@ material/0 = ExtResource( 8 )
 [node name="CSGMesh" type="CSGMesh" parent="Pond"]
 transform = Transform( 0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, -0.421441, 0.121168, 0.0994771 )
 use_in_baked_light = true
-mesh = SubResource( 10 )
+mesh = SubResource( 6 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Pond"]
 transform = Transform( 0.0452409, -0.000453321, -0.998976, 0, 1, -0.000453786, 0.998976, 2.05297e-05, 0.0452409, -0.424016, 0.132607, 0.0916986 )
-mesh = SubResource( 11 )
+mesh = SubResource( 7 )
 material/0 = null
-[connection signal="time_change" from="Environment" to="TestTown" method="_on_Environment_time_change"]
+
+[node name="InteriorCasa" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.76928, 0 )
+
+[node name="CSGMesh" type="CSGMesh" parent="InteriorCasa"]
+invert_faces = true
+mesh = SubResource( 8 )
+
+[node name="Door" type="Area" parent="InteriorCasa"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0162728, -0.975484, 1.40487 )
+collision_layer = 2
+collision_mask = 524288
+script = ExtResource( 9 )
+id = 1
+custom_env = ExtResource( 7 )
+
+[node name="CollisionShape" type="CollisionShape" parent="InteriorCasa/Door"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.560232, -0.101655 )
+shape = SubResource( 9 )
+
+[node name="StaticBody" type="StaticBody" parent="InteriorCasa"]
+
+[node name="CollisionShape" type="CollisionShape" parent="InteriorCasa/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.17066, 0 )
+shape = SubResource( 10 )
+
+[node name="OmniLight2" type="OmniLight" parent="InteriorCasa"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.692947, -0.0259708 )
+shadow_enabled = true
+
+[node name="OmniLight3" type="OmniLight" parent="InteriorCasa"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.692947, 1.69826 )
