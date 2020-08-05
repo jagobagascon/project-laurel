@@ -1,0 +1,32 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+
+[ext_resource path="res://Water.shader" type="Shader" id=1]
+
+[sub_resource type="OpenSimplexNoise" id=1]
+octaves = 4
+period = 80.0
+persistence = 1.0
+lacunarity = 2.38
+
+[sub_resource type="NoiseTexture" id=2]
+flags = 6
+width = 256
+height = 256
+seamless = true
+as_normalmap = true
+noise = SubResource( 1 )
+
+[resource]
+shader = ExtResource( 1 )
+shader_param/DepthGradientShallow = Color( 0.32549, 0.807843, 0.972549, 0.721569 )
+shader_param/DepthGradientDeep = Color( 0.0862745, 0.407843, 1, 1 )
+shader_param/DepthMaxDistance = 0.198
+shader_param/Flows = false
+shader_param/FlowDirection = Vector2( 0, 0 )
+shader_param/WaveScale = Vector2( 1, 1 )
+shader_param/SurfaceNoiseCutoff = 0.574
+shader_param/FoamMovement = true
+shader_param/FoamMovementAmount = 0.007
+shader_param/FoamCutoff = 0.014
+shader_param/FoamSpeed = 1.0
+shader_param/wave_noise = SubResource( 2 )
