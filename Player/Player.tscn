@@ -187,17 +187,6 @@ shape = SubResource( 1 )
 transform = Transform( 1, 0, 0, 0, 1.4, 0, 0, 0, 1, 0, 0.424079, 0 )
 use_in_baked_light = true
 shaded = true
-alpha_cut = 1
-frames = SubResource( 29 )
-animation = "still"
-playing = true
-
-[node name="SpriteShadow" type="AnimatedSprite3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1.4, 0, 0, 0, 1, 0, 0.424079, 0 )
-cast_shadow = 3
-use_in_baked_light = true
-billboard = 2
-shaded = true
 alpha_cut = 2
 frames = SubResource( 29 )
 animation = "still"

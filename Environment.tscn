@@ -17,7 +17,7 @@ script = ExtResource( 1 )
 environment = ExtResource( 2 )
 
 [node name="SunPos" type="Spatial" parent="."]
-transform = Transform( 0.759614, -0.650372, 0, 0.650372, 0.759614, 0, 0, 0, 1, 0, 0, 0 )
+transform = Transform( 0.951653, 0.307171, 0, -0.307171, 0.951653, 0, 0, 0, 1, 0, 0, 0 )
 
 [node name="Sun" type="DirectionalLight" parent="SunPos"]
 transform = Transform( 1, 0, 0, 0, 0.422618, 0.906308, 0, -0.906308, 0.422618, 0, 0, 0 )
