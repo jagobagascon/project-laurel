@@ -28,12 +28,18 @@ _global_script_classes=[ {
 "class": "GameEnvironment",
 "language": "GDScript",
 "path": "res://Environment.gd"
+}, {
+"base": "Spatial",
+"class": "NPC",
+"language": "GDScript",
+"path": "res://NPC.gd"
 } ]
 _global_script_class_icons={
 "Action": "",
 "BaseTown": "",
 "Door": "",
-"GameEnvironment": ""
+"GameEnvironment": "",
+"NPC": ""
 }
 
 [application]
@@ -78,7 +84,7 @@ player_action={
 [layer_names]
 
 3d_physics/layer_1="Collision"
-3d_physics/layer_2="Door"
+3d_physics/layer_2="Actionable"
 3d_physics/layer_20="Player"
 
 [rendering]

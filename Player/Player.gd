@@ -55,7 +55,6 @@ func _get_direction_by_input() -> Vector3:
 		animation = "still"
 	
 	$Sprite.animation = animation
-	
 	return direction.normalized()
 
 

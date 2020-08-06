@@ -1,4 +1,5 @@
 shader_type spatial;
+render_mode depth_draw_alpha_prepass;
 
 uniform vec4 DepthGradientShallow: hint_color = vec4(0.325, 0.807, 0.971, 0.725);
 uniform vec4 DepthGradientDeep: hint_color = vec4(0.086, 0.407, 1, 0.749);
@@ -19,11 +20,11 @@ uniform float FoamSpeed: hint_range(0.0, 5.0) = 1.0;
 
 float get_noise(vec2 p, float t) {
 	p *= WaveScale;
-	vec2 t_main = vec2(t, t);
+	vec2 t_main = vec2(t / 2.0, t / 2.0);
 	vec2 t_detail = vec2(-t, -t);
 	if (Flows) {
 		p += FlowDirection * t * 10.0;
-		t_detail *= FlowDirection * 10.0;
+		t_detail *= -1.0 * FlowDirection * 10.0;
 	}
 	float f = 0.0;
 	f += 1.0 * texture(wave_noise, p + t_main).g; p=2.*p;
@@ -41,6 +42,7 @@ void fragment() {
 	
 	float water_depth = clamp(distance(VERTEX, pixel_position), 0.0, 1.0);
 	bool negative_depth = (VERTEX - pixel_position).z <= 0.0;
+	
 	if (negative_depth) {
 		ALPHA = 0.0;
 	} else {

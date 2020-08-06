@@ -41,7 +41,6 @@ func register_door(door: Door):
 		doors[door.connection].append(door)
 
 func on_Door_reachable(door: Door):
-	print(door.id)
 	# This always overrides
 	_cur_action = Action.new(Action.Type.ENTER_DOOR, door)
 

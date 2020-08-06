@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://World.gd" type="Script" id=1]
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=2]
@@ -12,6 +12,8 @@
 [ext_resource path="res://Models/fireplace/Fire.tscn" type="PackedScene" id=10]
 [ext_resource path="res://Models/casa2.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Models/test_world/test_world.tscn" type="PackedScene" id=12]
+[ext_resource path="res://NPC.gd" type="Script" id=13]
+[ext_resource path="res://icon.png" type="Texture" id=14]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 1.05943, 0.941443, 1.0778 )
@@ -48,12 +50,13 @@ extents = Vector3( 0.323252, 0.600017, 0.208944 )
 [sub_resource type="BoxShape" id=10]
 extents = Vector3( 2.23967, 0.186782, 2.18222 )
 
+[sub_resource type="SphereShape" id=11]
+radius = 1.61072
+
 [node name="World" type="Spatial"]
 script = ExtResource( 1 )
 
 [node name="Environment" parent="." instance=ExtResource( 4 )]
-force_time = true
-forced_time = 0.62
 
 [node name="test_world" parent="." instance=ExtResource( 12 )]
 
@@ -63,7 +66,7 @@ forced_time = 0.62
 margin_top = 18.0452
 margin_right = 135.0
 margin_bottom = 32.0452
-text = "Pos = 1.8788, 0.12741, 5.93115"
+text = "Pos = 7.480952, 0.023548, 5.917624"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -251,21 +254,20 @@ spot_attenuation = 0.0426887
 spot_angle = 70.0
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.8788, 0.12741, 5.93115 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.48095, 0.0235482, 5.91762 )
 collision_layer = 524289
 collision_mask = 1
 
 [node name="Camera" type="Camera" parent="Player"]
-transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 3, 3 )
+transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 2.91774, 2.91774 )
 current = true
 fov = 60.0
-size = 0.5
-near = 0.25
+size = 2.44
+near = 0.5
 
 [node name="Fire" parent="." instance=ExtResource( 10 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4316, -4.76837e-07, 4.12401 )
 bias = 0.1
-contact = 0.0
 
 [node name="GIProbe" type="GIProbe" parent="."]
 extents = Vector3( 17.3448, 10, 16.6921 )
@@ -280,7 +282,6 @@ __meta__ = {
 [node name="Fire2" parent="Pond" instance=ExtResource( 10 )]
 transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -0.854079, 0.155565, 0.823868 )
 bias = 0.1
-contact = 0.0
 
 [node name="Water" type="MeshInstance" parent="Pond"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.141735, 0 )
@@ -301,7 +302,7 @@ mesh = SubResource( 7 )
 material/0 = null
 
 [node name="InteriorCasa" type="Spatial" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.76928, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -31.7347, 0, 21.1072 )
 
 [node name="CSGMesh" type="CSGMesh" parent="InteriorCasa"]
 invert_faces = true
@@ -331,3 +332,24 @@ shadow_enabled = true
 
 [node name="OmniLight3" type="OmniLight" parent="InteriorCasa"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.692947, 1.69826 )
+
+[node name="NPC" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.00126, 0, 1.8636 )
+script = ExtResource( 13 )
+
+[node name="Area" type="Area" parent="NPC"]
+collision_layer = 2
+collision_mask = 524288
+
+[node name="CollisionShape" type="CollisionShape" parent="NPC/Area"]
+shape = SubResource( 11 )
+
+[node name="Sprite3D" type="Sprite3D" parent="NPC"]
+transform = Transform( 1, 0, 0, 0, 2, 0, 0, 0, 1, 0, 0.607656, 0 )
+use_in_baked_light = true
+billboard = 2
+shaded = true
+alpha_cut = 2
+texture = ExtResource( 14 )
+[connection signal="body_entered" from="NPC/Area" to="NPC" method="_on_NPC_reachable"]
+[connection signal="body_exited" from="NPC/Area" to="NPC" method="_on_NPC_unreachable"]
