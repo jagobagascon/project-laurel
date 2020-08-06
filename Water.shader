@@ -1,5 +1,5 @@
 shader_type spatial;
-render_mode depth_draw_alpha_prepass;
+render_mode depth_draw_alpha_prepass, depth_draw_always;
 
 uniform vec4 DepthGradientShallow: hint_color = vec4(0.325, 0.807, 0.971, 0.725);
 uniform vec4 DepthGradientDeep: hint_color = vec4(0.086, 0.407, 1, 0.749);
