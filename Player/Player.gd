@@ -1,8 +1,9 @@
 extends KinematicBody
 
 const SPEED =  2
+const ACCELERATION = .25
 const G = 25
-var moving_direction = Vector3()
+var velocity = Vector3()
 var grounded = true
 
 # for slopes
@@ -12,51 +13,51 @@ func _physics_process(delta):
 	_character_movement(delta)
 
 func _character_movement(delta):
-	var direction = _get_direction_by_input()
+	var direction: Vector3 = _get_direction_by_input()
+	_update_animation(direction)
 	
-	moving_direction.x = direction.x * SPEED
+	if direction.length() == 0:
+		velocity = velocity.move_toward(Vector3.ZERO, ACCELERATION)
+	else:
+		velocity = velocity.move_toward(direction * SPEED, ACCELERATION)
+	
 	if not grounded:
-		moving_direction.y -= G * delta
+		velocity.y -= G * delta
+	else:
 		# if we dont apply some negative force is_on_floor_returns false
 		# but if we apply full gravity while on floor, player movement gets
 		# changed on slopes (sliding down the slop)
-	else:
-		moving_direction.y = -0.0000001
-
-	moving_direction.z = direction.z * SPEED
+		velocity.y = -0.0000001
 	
-	moving_direction = move_and_slide_with_snap(moving_direction, Vector3(0, -0.1, 0), Vector3.UP, true)
+	velocity = move_and_slide_with_snap(velocity, Vector3(0, -0.1, 0), Vector3.UP, true)
 	if self.is_on_floor():
 		grounded = true
 	else:
 		grounded = false
 
 func _get_direction_by_input() -> Vector3:
-	var direction: Vector3 = Vector3()
-
-	var animation = "still"
-	if Input.is_action_pressed("player_left"):
-		animation = "left"
-		direction.x = -1
-		
-	if Input.is_action_pressed("player_right"):
-		animation = "right"
-		direction.x = 1
+	var direction: Vector3 = Vector3.ZERO
 	
-	if Input.is_action_pressed("player_forward"):
+	direction.x = Input.get_action_strength("player_right") - Input.get_action_strength("player_left")
+	direction.z = Input.get_action_strength("player_back") - Input.get_action_strength("player_forward")
+	return direction.normalized()
+
+func _update_animation(direction: Vector3):
+	var animation = "still"
+	if direction.x < 0:
+		animation = "left"
+	elif direction.x > 0:
+		animation = "right"
+	
+	if direction.z < 0:
 		animation = "back"
-		direction.z = -1
-		
-	if Input.is_action_pressed("player_back"):
+	elif direction.z > 0:
 		animation = "front"
-		direction.z = 1
 
 	if direction.length() == 0:
 		animation = "still"
 	
 	$Sprite.animation = animation
-	return direction.normalized()
-
 
 func _process(_delta):
 	# show / hide character actions
