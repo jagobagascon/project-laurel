@@ -29,17 +29,41 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://Environment.gd"
 }, {
+"base": "Node",
+"class": "GameScene",
+"language": "GDScript",
+"path": "res://Scenes/GameScene.gd"
+}, {
+"base": "Spatial",
+"class": "InPath",
+"language": "GDScript",
+"path": "res://InPath.gd"
+}, {
 "base": "Spatial",
 "class": "NPC",
 "language": "GDScript",
 "path": "res://NPC.gd"
+}, {
+"base": "Area",
+"class": "OutPath",
+"language": "GDScript",
+"path": "res://OutPath.gd"
+}, {
+"base": "KinematicBody",
+"class": "Player",
+"language": "GDScript",
+"path": "res://Player/Player.gd"
 } ]
 _global_script_class_icons={
 "Action": "",
 "BaseTown": "",
 "Door": "",
 "GameEnvironment": "",
-"NPC": ""
+"GameScene": "",
+"InPath": "",
+"NPC": "",
+"OutPath": "",
+"Player": ""
 }
 
 [application]

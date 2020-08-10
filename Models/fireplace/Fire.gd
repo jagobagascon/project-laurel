@@ -14,7 +14,7 @@ func _ready():
 	($FireplaceSound.stream as AudioStreamSample).loop_end = 540000
 	$FireplaceSound.play()
 
-func _process(delta):
+func _process(_delta):
 	$Light.shadow_bias = bias
 	$Light.shadow_contact = contact
 	if (OS.get_ticks_msec() / 200) % 2 == 0:

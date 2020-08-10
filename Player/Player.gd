@@ -1,42 +1,54 @@
 extends KinematicBody
+class_name Player
+
+var _input_enabled: bool = true
 
 const MAX_SPEED =  2
 const TERMINAL_SPEED = 20
 const ACCELERATION = .25
 const G = .98
-var velocity = Vector3()
-var grounded = true
+var _velocity = Vector3()
+var _grounded = true
 
 # for slopes
 onready var actionsManager = $"/root/ActionsManager"
 onready var animationTree = $AnimationTree
 onready var animationState = $AnimationTree.get("parameters/playback")
 
+func input_enabled(enabled: bool):
+	_input_enabled = enabled
+	if not enabled:
+		_velocity = Vector3.ZERO
+
 func _physics_process(_delta):
-	_character_movement()
+	if _input_enabled:
+		_character_movement()
+	else:
+		# Stop character animation
+		_update_animation(Vector3())
 
 func _character_movement():
 	var direction: Vector3 = _get_direction_by_input()
 	_update_animation(direction)
 	
 	if direction.length() == 0:
-		velocity = velocity.move_toward(Vector3.ZERO, ACCELERATION)
+		_velocity = _velocity.move_toward(Vector3.ZERO, ACCELERATION)
 	else:
-		velocity = velocity.move_toward(direction * MAX_SPEED, ACCELERATION)
+		_velocity = _velocity.move_toward(direction * MAX_SPEED, ACCELERATION)
 	
-	if not grounded:
-		velocity.y -= G
+	if not _grounded:
+		_velocity.y -= G
 	else:
 		# if we dont apply some negative force is_on_floor_returns false
 		# but if we apply full gravity while on floor, player movement gets
 		# changed on slopes (sliding down the slop)
-		velocity.y = -0.0000001
+		_velocity.y = -0.0000001
 	
-	velocity = move_and_slide_with_snap(velocity, Vector3(0, -0.1, 0), Vector3.UP, true)
+	_velocity = move_and_slide_with_snap(_velocity, Vector3(0, -0.1, 0), Vector3.UP, true)
 	if self.is_on_floor():
-		grounded = true
+		_grounded = true
 	else:
-		grounded = false
+		_grounded = false
 
 func _get_direction_by_input() -> Vector3:
 	var direction: Vector3 = Vector3.ZERO

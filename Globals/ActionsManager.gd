@@ -8,10 +8,6 @@ var doors = {}
 
 var NONE_ACTION = Action.new(Action.Type.NONE)
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
 func current_action():
 	if _cur_action:
 		return _cur_action

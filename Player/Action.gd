@@ -7,9 +7,9 @@ enum Type {
 	NONE, ENTER_DOOR
 }
 
-func _init(type, data = null):
-	self.type = type
-	self.data = data
+func _init(t, d = null):
+	self.type = t
+	self.data = d
 
 func to_string() -> String:
 	match self.type:

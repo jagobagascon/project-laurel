@@ -15,11 +15,11 @@ custom_defines = ""
 
 [sub_resource type="ShaderMaterial" id=2]
 shader = SubResource( 1 )
-shader_param/animation_progress = 1.0
+shader_param/animation_progress = 0.0
 
-[sub_resource type="Animation" id=4]
+[sub_resource type="Animation" id=3]
 resource_name = "fade_in"
-length = 0.5
+length = 0.6
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:material:shader_param/animation_progress")
 tracks/0/interp = 1
@@ -33,9 +33,8 @@ tracks/0/keys = {
 "values": [ 0.0, 1.0 ]
 }
 
-[sub_resource type="Animation" id=3]
-resource_name = "fade_out"
-length = 0.5
+[sub_resource type="Animation" id=4]
+length = 0.6
 tracks/0/type = "value"
 tracks/0/path = NodePath(".:material:shader_param/animation_progress")
 tracks/0/interp = 1
@@ -69,6 +68,6 @@ render_target_update_mode = 3
 gui_snap_controls_to_pixels = false
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-anims/fade_in = SubResource( 4 )
-anims/fade_out = SubResource( 3 )
+anims/fade_in = SubResource( 3 )
+anims/fade_out = SubResource( 4 )
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
