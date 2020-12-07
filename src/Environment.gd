@@ -10,7 +10,7 @@ export(float, 0, 1) var forced_time: float = 0
 const DAY_DURATION = 24 * 60 * 60 * 1000
 
 const day_start: float = 7.0 / 24.0
-const day_end: float = 19.0 / 24.0
+const day_end: float = 20.0 / 24.0
 
 const dawn_duration: float = 1 / 24.0
 const dusk_duration: float = 1 / 24.0

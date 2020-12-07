@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Models/black_hole/black_hole.shader" type="Shader" id=1]
+[ext_resource path="res://Models/black_hole/BlackHole.gd" type="Script" id=2]
+
+[sub_resource type="SphereMesh" id=1]
+radius = 1.707
+height = 3.414
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = ExtResource( 1 )
+shader_param/Size = 1.707
+shader_param/EventHorizonAmount = 0.433
+shader_param/GravityForce = 5.276
+
+[node name="BlackHole" type="MeshInstance"]
+cast_shadow = 0
+extra_cull_margin = 5649.66
+mesh = SubResource( 1 )
+material/0 = SubResource( 2 )
+script = ExtResource( 2 )
